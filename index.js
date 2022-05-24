@@ -50,6 +50,21 @@ async function run() {
             res.send({ result, token });
         });
 
+        //delete product
+        app.delete('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await toolsCollection.deleteOne(query);
+            res.send(result);
+        });
+
+        //add new product
+        app.post('/product', async (req, res) => {
+            const newProduct = req.body;
+            const result = await toolsCollection.insertOne(newProduct);
+            res.send(result);
+        });
+
     } finally {
     }
 }
