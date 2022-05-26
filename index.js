@@ -144,6 +144,14 @@ async function run() {
             const reviews = await cursor.toArray();
             res.send(reviews);
         });
+
+        //specific user
+        app.get('/user/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const user = await userCollection.findOne(query);
+            res.send(user);
+        });
     }
 
     finally {
