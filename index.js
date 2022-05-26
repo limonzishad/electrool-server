@@ -137,13 +137,13 @@ async function run() {
             res.send(result);
         });
 
-        // // show all reviews
-        // app.get('/reviews', async (req, res) => {
-        //     const query = {};
-        //     const cursor = reviewCollection.find(query);
-        //     const reviews = await cursor.toArray();
-        //     res.send(reviews);
-        // });
+        // show all reviews
+        app.get('/reviews', async (req, res) => {
+            const query = {};
+            const cursor = reviewCollection.find(query);
+            const reviews = await cursor.toArray();
+            res.send(reviews);
+        });
     }
 
     finally {
