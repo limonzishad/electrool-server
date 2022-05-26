@@ -35,7 +35,7 @@ async function run() {
         console.log('connected');
         const toolsCollection = client.db('electrool_server').collection('tools');
         const orderCollection = client.db('electrool_server').collection('order');
-        // const reviewCollection = client.db('electrool_server').collection('review');
+        const reviewCollection = client.db('electrool_server').collection('review');
         const userCollection = client.db('electrool_server').collection('users');
 
         // show all products
@@ -130,12 +130,12 @@ async function run() {
             res.send(result);
         });
 
-        // //add new review
-        // app.post('/order', async (req, res) => {
-        //     const newReview = req.body;
-        //     const result = await reviewCollection.insertOne(newReview);
-        //     res.send(result);
-        // });
+        //add new review
+        app.post('/order', async (req, res) => {
+            const newReview = req.body;
+            const result = await reviewCollection.insertOne(newReview);
+            res.send(result);
+        });
 
         // // show all reviews
         // app.get('/reviews', async (req, res) => {
