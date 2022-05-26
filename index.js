@@ -19,7 +19,7 @@ function verifyJWT(req, res, next) {
         return res.status(401).send({ message: 'Unauthorized access' });
     }
 
-    const token = authHeader.split(' '[1]);
+    const token = authHeader.split(' ')[1];
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
         if (err) {
             return res.status(403).send({ message: 'Forbidden access' });
@@ -34,7 +34,8 @@ async function run() {
         await client.connect();
         console.log('connected');
         const toolsCollection = client.db('electrool_server').collection('tools');
-
+        const orderCollection = client.db('electrool_server').collection('order');
+        // const reviewCollection = client.db('electrool_server').collection('review');
         const userCollection = client.db('electrool_server').collection('users');
 
         // show all products
@@ -83,7 +84,7 @@ async function run() {
         });
 
         //load all users
-        app.get('/users', async (req, res) => {
+        app.get('/users', verifyJWT, async (req, res) => {
             const users = await userCollection.find().toArray();
             res.send(users);
         });
@@ -105,6 +106,44 @@ async function run() {
             const isAdmin = user.role === 'admin';
             res.send({ admin: isAdmin });
         });
+
+        //add new order
+        app.post('/order', async (req, res) => {
+            const newOrder = req.body;
+            const result = await orderCollection.insertOne(newOrder);
+            res.send(result);
+        });
+
+        // show all orders
+        app.get('/orders', async (req, res) => {
+            const query = {};
+            const cursor = orderCollection.find(query);
+            const orders = await cursor.toArray();
+            res.send(orders);
+        });
+
+        //cancel order
+        app.delete('/order/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await orderCollection.deleteOne(query);
+            res.send(result);
+        });
+
+        // //add new review
+        // app.post('/order', async (req, res) => {
+        //     const newReview = req.body;
+        //     const result = await reviewCollection.insertOne(newReview);
+        //     res.send(result);
+        // });
+
+        // // show all reviews
+        // app.get('/reviews', async (req, res) => {
+        //     const query = {};
+        //     const cursor = reviewCollection.find(query);
+        //     const reviews = await cursor.toArray();
+        //     res.send(reviews);
+        // });
     }
 
     finally {
